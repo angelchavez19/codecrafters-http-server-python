@@ -1,19 +1,70 @@
+"""A simple HTTP server."""
 import socket
+from enum import Enum
 
-HOST, PORT = "localhost", 4221
+HOST = "localhost"
+PORT = 4221
+BUFFER_ZISE = 1024
+CRLF = '\r\n'
+END_HEADERS = CRLF + CRLF
 
-code_status = {
-    200: 'OK',
-    404: 'Not Found',
-}
+
+class HttpMethod(Enum):
+    """An enum representing HTTP methods."""
+    GET = "GET"
 
 
-def parsed_response(code: int, headers: dict = {}, body: str = "") -> str:
-    response_headers = f"HTTP/1.1 {code} {code_status.get(code)}\r\n"
-    for key in headers:
-        response_headers += f"{key}: {headers[key]}\r\n"
-    response_headers += "\r\n"
-    return response_headers + body
+class HttpStatusCode(Enum):
+
+    OK = (200, "OK")
+    NOT_FOUND = (404, "Not Found")
+
+
+class RequestLine:
+    def __init__(self, method: HttpMethod, path: str, http_version: str) -> None:
+        self.method = method
+        self.path = path
+        self.http_version = http_version
+
+
+class Request:
+    def __init__(self, data: bytes) -> None:
+        data: list[str] = data.decode().splitlines().copy()
+        method, path, http_version = data[0].split(' ')
+        data.pop(0)
+        self.method = HttpMethod(method)
+        self.path = path
+        self.http_version = http_version
+        self.headers = {}
+        for header in data:
+            if header == '':
+                break
+            key, value = header.split(': ')
+            self.headers[key] = value
+
+    def get_request_line(self) -> RequestLine:
+        return RequestLine(self.method, self.path, self.http_version)
+
+
+class Response:
+    def __init__(
+        self,
+        request_line: RequestLine,
+        code: HttpStatusCode,
+        headers: dict = {},
+        body: str = ""
+    ) -> None:
+        self.rq = request_line
+        self.code = code
+        self.headers = headers
+        self.body = body
+
+    def encode(self, ):
+        message = f"{self.rq.http_version} {self.code.value[0]} {self.code.value[1]}"
+        for header in self.headers:
+            message += f"{CRLF}{header}: {self.headers[header]}"
+        message += END_HEADERS + self.body
+        return message.encode()
 
 
 def main():
@@ -29,21 +80,40 @@ def main():
     conn, address = server.accept()
     print("Connected by:", address)
 
-    data = conn.recv(1024).decode().splitlines()
-    print(data[0])
+    data = conn.recv(1024)
 
-    http_status = data[0].split(' ')
-    path = http_status[1]
-    if http_status[1] == '/':
-        response = parsed_response(200)
-    elif path.startswith('/echo/'):
-        message = path.split('/echo/')[1]
-        response = parsed_response(200, {
-            "Content-Type":  "text/plain",
-            "Content-Length": f"{len(message)}"
-        }, f"{message}")
+    request = Request(data)
+
+    if request.path == '/':
+        response = Response(request.get_request_line(), HttpStatusCode.OK)
+    elif request.path.startswith('/echo/'):
+        message = request.path.split('/echo/')[1]
+        response = Response(
+            request.get_request_line(),
+            HttpStatusCode.OK,
+            headers={
+                'Content-Type': "text/plain",
+                'Content-Length': len(message),
+            },
+            body=message
+        )
+    elif request.path == '/user-agent':
+        message = request.headers.get('User-Agent')
+        response = Response(
+            request.get_request_line(),
+            HttpStatusCode.OK,
+            headers={
+                'Content-Type': "text/plain",
+                'Content-Length': len(message),
+            },
+            body=message
+        )
     else:
-        response = parsed_response(404)
+        response = Response(
+            request.get_request_line(),
+            HttpStatusCode.NOT_FOUND
+        )
+
     conn.sendall(response.encode())
 
 
