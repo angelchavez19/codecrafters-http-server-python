@@ -69,8 +69,7 @@ class Response:
 
 
 def client_handler(conn):
-    data = conn.recv(1024)
-
+    data = conn.recv(BUFFER_ZISE)
     request = Request(data)
 
     if request.path == '/':
@@ -122,7 +121,7 @@ def main():
         print("Connected by:", address)
         thread = threading.Thread(
             target=client_handler,
-            args=(conn)
+            args=(conn,)
         )
         thread.start()
 
