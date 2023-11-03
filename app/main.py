@@ -36,7 +36,7 @@ def main():
     path = http_status[1].split('/')
     param = path[-1]
     print(path)
-    if len(param) == 0:
+    if len(param) == 0 and len(path) == 2:
         response = parsed_response(200)
     elif path[1] == "echo" and len(path) == 3:
         response = parsed_response(200, {
