@@ -25,7 +25,7 @@ def main():
     print(data[0])
 
     http_status = data[0].split(' ')
-    if http_status[1] in ROUTES:
+    if http_status[1][0] == '/' and http_status[1][-1] == '/':
         conn.sendall(get_response(200))
     else:
         conn.sendall(get_response(400))
