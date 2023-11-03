@@ -15,12 +15,13 @@ def get_response(code: int) -> str:
 
 def main():
     # Dev
-    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # server.bind((HOST, PORT))
-    # server.listen(5)
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen(5)
 
     # Deploy
-    server = socket.create_server(("localhost", 4221), reuse_port=True)
+    # server = socket.create_server(("localhost", 4221), reuse_port=True)
+
     print("Server in port:", PORT)
     conn, address = server.accept()
     print("Connected by:", address)
@@ -34,7 +35,7 @@ def main():
     else:
         param = http_status[1].split('/')[-1]
         response = f"{get_response(200)}\r\nContent-Type: text/plain\r\n" + \
-            f"Content-Length: {len(param)}\r\n\r\n{param}"
+            f"Content-Length: {len(param)}\r\n\r\n{param}\r\n"
         conn.sendall(response.encode())
 
 
