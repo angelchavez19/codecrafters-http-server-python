@@ -35,7 +35,7 @@ def main():
     else:
         param = http_status[1].split('/')[-1]
         response = f"{get_response(200)}\r\nContent-Type: text/plain\r\n" + \
-            f"Content-Length: {len(param)}\r\n\r\n{param}\r\n"
+            f"Content-Length: {len(param)}\r\n\r\n{param}\r\n\r\n"
         conn.sendall(response.encode())
 
 
