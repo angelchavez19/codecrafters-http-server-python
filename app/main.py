@@ -2,25 +2,28 @@ import socket
 
 HOST, PORT = "localhost", 4221
 
-ROUTES = ['/']
+code_status = {
+    200: 'OK',
+    404: 'Not Found',
+}
 
 
-def get_response(code: int) -> str:
-    responses = {
-        200: 'OK',
-        404: 'Not Found',
-    }
-    return f"HTTP/1.1 {code} {responses.get(code)}"
+def parsed_response(code: int, headers: dict = {}, body: str = "") -> str:
+    response_headers = f"HTTP/1.1 {code} {code_status.get(code)}\r\n"
+    for key in headers:
+        response_headers += f"{key}: {headers[key]}\r\n"
+    response_headers += "\r\n"
+    return response_headers + body
 
 
 def main():
     # Dev
-    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # server.bind((HOST, PORT))
-    # server.listen(5)
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen(5)
 
     # Deploy
-    server = socket.create_server(("localhost", 4221), reuse_port=True)
+    # server = socket.create_server(("localhost", 4221), reuse_port=True)
 
     print("Server in port:", PORT)
     conn, address = server.accept()
@@ -30,13 +33,15 @@ def main():
     print(data[0])
 
     http_status = data[0].split(' ')
-    if http_status[1][0] == '/' and http_status[1][-1] == '/':
-        conn.sendall(f"{get_response(200)}\r\n\r\n".encode())
+    param = http_status[1].split('/')[-1]
+    if len(param) == 0:
+        response = parsed_response(200)
     else:
-        param = http_status[1].split('/')[-1]
-        response = f"{get_response(200)}\r\nContent-Type: text/plain\r\n" + \
-            f"Content-Length: {len(param)}\r\n\r\n{param}\r\n\r\n"
-        conn.sendall(response.encode())
+        response = parsed_response(200, {
+            "Content-Type":  "text/plain",
+            "Content-Length": f"{len(param)}"
+        }, f"{param}")
+    conn.sendall(response.encode())
 
 
 if __name__ == "__main__":
