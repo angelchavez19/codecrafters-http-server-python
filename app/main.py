@@ -149,7 +149,6 @@ def main(directory_path):
     while True:
         conn, _ = server.accept()
         thread = threading.Thread(
-            target=client_handler, args=(conn,),
             target=client_handler, args=(conn, directory_path)
         )
         thread.start()
