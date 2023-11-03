@@ -14,9 +14,7 @@ def get_response(code: int) -> bytes:
 
 
 def main():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((HOST, PORT))
-    server.listen(5)
+    server = socket.create_server(("localhost", 4221), reuse_port=True)
     print("Server in port:", PORT)
     conn, address = server.accept()
     print("Connected by:", address)
