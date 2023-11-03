@@ -34,13 +34,13 @@ def main():
 
     http_status = data[0].split(' ')
     param = http_status[1].split('/')[-1]
-    if len(param) == 0:
-        response = parsed_response(200)
-    else:
-        response = parsed_response(200, {
-            "Content-Type":  "text/plain",
-            "Content-Length": f"{len(param)}"
-        }, f"{param}")
+    # if len(param) == 0:
+    #     response = parsed_response(200)
+    # else:
+    response = parsed_response(200, {
+        "Content-Type":  "text/plain",
+        "Content-Length": f"{len(param)}"
+    }, f"{param}")
     conn.sendall(response.encode())
 
 
