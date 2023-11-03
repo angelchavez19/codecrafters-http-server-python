@@ -33,16 +33,15 @@ def main():
     print(data[0])
 
     http_status = data[0].split(' ')
-    path = http_status[1].split('/')
-    param = path[-1]
-    print(path)
-    if len(param) == 0 and len(path) == 2:
+    path = http_status[1]
+    if http_status[1] == '/':
         response = parsed_response(200)
-    elif path[1] == "echo" and len(path) == 3:
+    elif path.startswith('/echo/'):
+        message = path.split('/echo/')
         response = parsed_response(200, {
             "Content-Type":  "text/plain",
-            "Content-Length": f"{len(param)}"
-        }, f"{param}")
+            "Content-Length": f"{len(message)}"
+        }, f"{message}")
     else:
         response = parsed_response(404)
     conn.sendall(response.encode())
