@@ -8,7 +8,7 @@ ROUTES = ['/']
 def get_response(code: int) -> bytes:
     responses = {
         200: 'OK',
-        400: 'Not Found',
+        404: 'Not Found',
     }
     return f"HTTP/1.1 {code} {responses.get(code)}\r\n\r\n".encode()
 
@@ -26,7 +26,7 @@ def main():
     if http_status[1][0] == '/' and http_status[1][-1] == '/':
         conn.sendall(get_response(200))
     else:
-        conn.sendall(get_response(400))
+        conn.sendall(get_response(404))
 
 
 if __name__ == "__main__":
