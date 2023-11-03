@@ -37,7 +37,7 @@ def main():
     if http_status[1] == '/':
         response = parsed_response(200)
     elif path.startswith('/echo/'):
-        message = path.split('/echo/')
+        message = path.split('/echo/')[1]
         response = parsed_response(200, {
             "Content-Type":  "text/plain",
             "Content-Length": f"{len(message)}"
