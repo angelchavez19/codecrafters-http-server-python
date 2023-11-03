@@ -16,7 +16,7 @@ def get_response(code: int) -> bytes:
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((HOST, PORT))
-    server.listen(1)
+    server.listen(5)
     print("Server in port:", PORT)
     conn, address = server.accept()
     print("Connected by:", address)
