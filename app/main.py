@@ -24,6 +24,7 @@ def main():
         conn.sendall(methods.get(200))
     else:
         conn.sendall(methods.get(400))
+    conn.close()
 
 
 if __name__ == "__main__":
