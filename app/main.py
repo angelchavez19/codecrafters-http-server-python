@@ -11,14 +11,14 @@ methods = {
 
 
 def main():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((HOST, PORT))
-    server.listen(1)
+    server = socket.create_server((HOST, PORT), reuse_port=True)
     print("Server in port:", PORT)
     conn, address = server.accept()
     print("Connected by:", address)
 
     data = conn.recv(1024).decode().splitlines()
+    print(data[0])
+
     http_status = data[0].split(' ')
     if http_status[1] in routes:
         conn.sendall(methods.get(200))
