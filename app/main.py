@@ -18,12 +18,12 @@ def parsed_response(code: int, headers: dict = {}, body: str = "") -> str:
 
 def main():
     # Dev
-    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # server.bind((HOST, PORT))
-    # server.listen(5)
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen(5)
 
     # Deploy
-    server = socket.create_server(("localhost", 4221), reuse_port=True)
+    # server = socket.create_server(("localhost", 4221), reuse_port=True)
 
     print("Server in port:", PORT)
     conn, address = server.accept()
@@ -38,11 +38,11 @@ def main():
     print(path)
     if len(param) == 0:
         response = parsed_response(200)
-    elif path[1] == "echo":
+    elif path[1] == "echo" and len(path) == 3:
         response = parsed_response(200, {
             "Content-Type":  "text/plain",
-            "Content-Length": f"{len(http_status[1][5:])}"
-        }, f"{http_status[1][5:]}")
+            "Content-Length": f"{len(param)}"
+        }, f"{param}")
     else:
         response = parsed_response(404)
     conn.sendall(response.encode())
