@@ -18,12 +18,12 @@ def parsed_response(code: int, headers: dict = {}, body: str = "") -> str:
 
 def main():
     # Dev
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((HOST, PORT))
-    server.listen(5)
+    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # server.bind((HOST, PORT))
+    # server.listen(5)
 
     # Deploy
-    # server = socket.create_server(("localhost", 4221), reuse_port=True)
+    server = socket.create_server(("localhost", 4221), reuse_port=True)
 
     print("Server in port:", PORT)
     conn, address = server.accept()
