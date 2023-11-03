@@ -1,5 +1,6 @@
 """A simple HTTP server."""
 import socket
+import threading
 from enum import Enum
 
 HOST = "localhost"
@@ -67,6 +68,45 @@ class Response:
         return message.encode()
 
 
+def client_handler(conn):
+    data = conn.recv(1024)
+
+    request = Request(data)
+
+    if request.path == '/':
+        response = Response(request.get_request_line(), HttpStatusCode.OK)
+    elif request.path.startswith('/echo/'):
+        message = request.path.split('/echo/')[1]
+        response = Response(
+            request.get_request_line(),
+            HttpStatusCode.OK,
+            headers={
+                'Content-Type': "text/plain",
+                'Content-Length': len(message),
+            },
+            body=message
+        )
+    elif request.path == '/user-agent':
+        message = request.headers.get('User-Agent')
+        response = Response(
+            request.get_request_line(),
+            HttpStatusCode.OK,
+            headers={
+                'Content-Type': "text/plain",
+                'Content-Length': len(message),
+            },
+            body=message
+        )
+    else:
+        response = Response(
+            request.get_request_line(),
+            HttpStatusCode.NOT_FOUND
+        )
+
+    conn.sendall(response.encode())
+    conn.close()
+
+
 def main():
     # Dev
     # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -81,43 +121,11 @@ def main():
     while True:
         conn, address = server.accept()
         print("Connected by:", address)
-
-        data = conn.recv(1024)
-
-        request = Request(data)
-
-        if request.path == '/':
-            response = Response(request.get_request_line(), HttpStatusCode.OK)
-        elif request.path.startswith('/echo/'):
-            message = request.path.split('/echo/')[1]
-            response = Response(
-                request.get_request_line(),
-                HttpStatusCode.OK,
-                headers={
-                    'Content-Type': "text/plain",
-                    'Content-Length': len(message),
-                },
-                body=message
-            )
-        elif request.path == '/user-agent':
-            message = request.headers.get('User-Agent')
-            response = Response(
-                request.get_request_line(),
-                HttpStatusCode.OK,
-                headers={
-                    'Content-Type': "text/plain",
-                    'Content-Length': len(message),
-                },
-                body=message
-            )
-        else:
-            response = Response(
-                request.get_request_line(),
-                HttpStatusCode.NOT_FOUND
-            )
-
-        conn.sendall(response.encode())
-        conn.close()
+        thread = threading.Thread(
+            target=client_handler,
+            args=(conn)
+        )
+        thread.start()
 
 
 if __name__ == "__main__":
