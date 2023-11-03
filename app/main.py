@@ -77,44 +77,47 @@ def main():
     server = socket.create_server(("localhost", 4221), reuse_port=True)
 
     print("Server in port:", PORT)
-    conn, address = server.accept()
-    print("Connected by:", address)
 
-    data = conn.recv(1024)
+    while True:
+        conn, address = server.accept()
+        print("Connected by:", address)
 
-    request = Request(data)
+        data = conn.recv(1024)
 
-    if request.path == '/':
-        response = Response(request.get_request_line(), HttpStatusCode.OK)
-    elif request.path.startswith('/echo/'):
-        message = request.path.split('/echo/')[1]
-        response = Response(
-            request.get_request_line(),
-            HttpStatusCode.OK,
-            headers={
-                'Content-Type': "text/plain",
-                'Content-Length': len(message),
-            },
-            body=message
-        )
-    elif request.path == '/user-agent':
-        message = request.headers.get('User-Agent')
-        response = Response(
-            request.get_request_line(),
-            HttpStatusCode.OK,
-            headers={
-                'Content-Type': "text/plain",
-                'Content-Length': len(message),
-            },
-            body=message
-        )
-    else:
-        response = Response(
-            request.get_request_line(),
-            HttpStatusCode.NOT_FOUND
-        )
+        request = Request(data)
 
-    conn.sendall(response.encode())
+        if request.path == '/':
+            response = Response(request.get_request_line(), HttpStatusCode.OK)
+        elif request.path.startswith('/echo/'):
+            message = request.path.split('/echo/')[1]
+            response = Response(
+                request.get_request_line(),
+                HttpStatusCode.OK,
+                headers={
+                    'Content-Type': "text/plain",
+                    'Content-Length': len(message),
+                },
+                body=message
+            )
+        elif request.path == '/user-agent':
+            message = request.headers.get('User-Agent')
+            response = Response(
+                request.get_request_line(),
+                HttpStatusCode.OK,
+                headers={
+                    'Content-Type': "text/plain",
+                    'Content-Length': len(message),
+                },
+                body=message
+            )
+        else:
+            response = Response(
+                request.get_request_line(),
+                HttpStatusCode.NOT_FOUND
+            )
+
+        conn.sendall(response.encode())
+        conn.close()
 
 
 if __name__ == "__main__":
