@@ -17,6 +17,7 @@ def main():
     print("Server in port:", PORT)
     conn, address = server.accept()
     print("Connected by:", address)
+
     data = conn.recv(1024).decode().splitlines()
     http_status = data[0].split(' ')
     if http_status[1] in routes:
