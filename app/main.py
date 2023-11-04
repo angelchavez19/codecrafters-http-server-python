@@ -25,11 +25,11 @@ def main():
     directory_path = args.directory if args.directory else None
 
     # Dev
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((HOST, PORT))
+    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # server.bind((HOST, PORT))
 
     # Deploy
-    # server = socket.create_server(("localhost", 4221), reuse_port=True)
+    server = socket.create_server(("localhost", 4221), reuse_port=True)
     server.listen()
     print("Server in port:", PORT)
 
