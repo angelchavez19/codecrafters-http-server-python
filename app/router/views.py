@@ -1,6 +1,6 @@
-from server.server import Request, Response
-from server.types import HttpStatusCode
-from utils.response import get_response, get_response_not_found
+from app.server.server import Request, Response
+from app.server.types import HttpStatusCode
+from app.utils.response import get_response, get_response_not_found
 
 
 def index(request: Request) -> Response:

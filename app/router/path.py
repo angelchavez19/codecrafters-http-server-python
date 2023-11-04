@@ -1,5 +1,5 @@
-from server.server import Response
-from server.types import HttpMethod
+from app.server.server import Response
+from app.server.types import HttpMethod
 
 
 class Path:

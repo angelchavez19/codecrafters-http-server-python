@@ -1,5 +1,5 @@
-from server.server import Response, Request
-from server.types import HttpStatusCode
+from app.server.server import Response, Request
+from app.server.types import HttpStatusCode
 
 
 def get_response(request: Request, message: str, content_type: str = "text/plain") -> Response:

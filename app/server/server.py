@@ -1,5 +1,5 @@
-from constants.constants import CRLF, END_HEADERS
-from server.types import HttpMethod, HttpStatusCode, RequestLine
+from app.constants.constants import CRLF, END_HEADERS
+from app.server.types import HttpMethod, HttpStatusCode, RequestLine
 
 
 class Request:

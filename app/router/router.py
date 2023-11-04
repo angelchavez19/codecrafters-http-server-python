@@ -1,6 +1,6 @@
-from server.server import Request, Response
-from utils.response import get_response_not_found
-from router.urls import urls
+from app.router.urls import urls
+from app.server.server import Request, Response
+from app.utils.response import get_response_not_found
 
 
 def router(request: Request, directory: str = None) -> Response:

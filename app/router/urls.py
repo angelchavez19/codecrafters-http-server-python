@@ -1,6 +1,6 @@
-from server.types import HttpMethod
-from router.path import Path
-from router.views import *
+from app.router.path import Path
+from app.router.views import *
+from app.server.types import HttpMethod
 
 
 urls = [

@@ -1,4 +1,4 @@
-from server.server import Response
+from app.server.server import Response
 
 RED = "\033[31m"
 GREEN = "\033[32m"
