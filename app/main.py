@@ -78,7 +78,7 @@ def logger(response: Response):
         message = f"{GREEN}"
     else:
         message = f"{RED}"
-    message += f"{BOLD}{response.rq.method.name}"
+    message += f"{BOLD}{response.rq.method.name} "
     message += f"{response.rq.path}"
     message += RESET
     print(message)
@@ -112,7 +112,7 @@ def router(request: Request, directory: str = None):
     elif request.path == '/user-agent':
         message = request.headers.get('User-Agent')
         response = get_request(request, message)
-    elif request.path.startswith == '/files/' and directory:
+    elif request.path.startswith('/files/') and directory:
         path = request.path.split('/files/')[1]
         try:
             with open(f"{directory}/{path}", 'r', encoding='UTF-8') as file:
@@ -136,7 +136,11 @@ def client_handler(conn, directory_path):
     conn.close()
 
 
-def main(directory_path):
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--directory", help="the directory path")
+    args = parser.parse_args()
+    directory_path = args.directory if args.directory else None
     # Dev
     # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # server.bind((HOST, PORT))
@@ -155,7 +159,4 @@ def main(directory_path):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--directory", help="the directory path")
-    args = parser.parse_args()
-    main(args.directory if args.directory else None)
+    main()
