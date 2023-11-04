@@ -5,9 +5,9 @@ from app.server.types import HttpMethod
 
 urls = [
     Path('/', index),
-    Path('/echo/', echo, start=True),
-    Path('/user-agent', user_agent),
-    Path('/files/', post_file, start=True,
-         directory=True, method=HttpMethod.POST),
-    Path('/files/', get_file, start=True, directory=True),
+    # Path('/echo/', echo, start=True),
+    # Path('/user-agent', user_agent),
+    # Path('/files/', post_file, start=True,
+    #      directory=True, method=HttpMethod.POST),
+    # Path('/files/', get_file, start=True, directory=True),
 ]

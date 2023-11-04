@@ -10,6 +10,7 @@ def router(request: Request, directory: str = None) -> Response:
         if (path.start and request.path.startswith(path.path)) or \
                 (not path.start and request.path == path.path):
             if path.directory:
-                return path.view(request, directory)
-            return path.view(request)
+                return path.view(request=request, directory=directory)
+            return path.view(request=request)
+    print('path not exists')
     return get_response_not_found(request=request)
