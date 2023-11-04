@@ -12,4 +12,4 @@ def router(request: Request, directory: str = None) -> Response:
             if path.directory:
                 return path.view(request, directory)
             return path.view(request)
-    return get_response_not_found()
+    return get_response_not_found(request=request)

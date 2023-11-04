@@ -9,11 +9,11 @@ from app.router.router import router
 from app.utils.logger import logger
 
 
-def client_handler(conn, directory_path):
+def client_handler(conn: socket.socket, directory_path: str | None):
     data = conn.recv(BUFFER_ZISE)
-    request = Request(data)
-    response = router(request, directory_path)
-    logger(response)
+    request = Request(data=data)
+    response = router(request=request, directory=directory_path)
+    logger(response=response)
     conn.sendall(response.encode())
     conn.close()
 
