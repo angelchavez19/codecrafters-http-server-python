@@ -4,7 +4,6 @@ from app.utils.response import get_response, get_response_not_found
 
 
 def index(request: Request) -> Response:
-    print('aaaaaaaaaaa')
     return get_response(request=request)
 
 
