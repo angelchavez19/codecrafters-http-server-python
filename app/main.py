@@ -3,10 +3,10 @@ import argparse
 import socket
 import threading
 
-from constants.constants import *
-from server.server import Request
-from router.router import router
-from utils.logger import logger
+from app.constants.constants import *
+from app.server.server import Request
+from app.router.router import router
+from app.utils.logger import logger
 
 
 def client_handler(conn, directory_path):
