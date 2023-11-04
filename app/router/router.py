@@ -12,5 +12,5 @@ def router(request: Request, directory: str = None) -> Response:
             if path.directory:
                 return path.view(request=request, directory=directory)
             return path.view(request=request)
-    print('path not exists')
+    print(path.path, 'path not exists')
     return get_response_not_found(request=request)
